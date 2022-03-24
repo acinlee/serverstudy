@@ -22,9 +22,16 @@ public class TestService {
     }
 
     public boolean login(String userId, String userPw) {
-        TestEntity test = testRepository.findById(userId).get();
-        System.out.println(test.toString());
-        return false;
+        TestEntity test = testRepository.findById(userId).orElse(null);
+        if( test != null ) {
+            if ( (userPw).equals(test.getUserPw())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
 

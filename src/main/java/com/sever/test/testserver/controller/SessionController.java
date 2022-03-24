@@ -2,7 +2,6 @@ package com.sever.test.testserver.controller;
 
 import com.sever.test.testserver.model.TestEntity;
 import com.sever.test.testserver.service.TestService;
-import org.aspectj.weaver.ast.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ public class SessionController {
     @Autowired
     TestService testService;
 
-    @RequestMapping("/user/login")
+    @RequestMapping("/user/session/login")
     public int login(@RequestParam String userId, @RequestParam String userPw, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
 
@@ -61,10 +60,22 @@ public class SessionController {
         }
         return response.getStatus();
     }
+
     @PostMapping("/user/join")
     public ResponseEntity<TestEntity> userJoin(@RequestBody TestEntity test){
         testService.join(test.getUserId(), test.getUserPw());
         return new ResponseEntity<>(test, HttpStatus.OK);
+    }
+
+    @RequestMapping("/user/login")
+    public ResponseEntity userLogin(@RequestParam String userId, @RequestParam String userPw) {
+        boolean isReturn = testService.login(userId, userPw);
+        if (isReturn) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @RequestMapping("/session/create")
